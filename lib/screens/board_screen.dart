@@ -97,9 +97,9 @@ class _BoardScreenState extends State<BoardScreen> {
                       borderRadius: BorderRadius.circular(12.0),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 5.0,
-                          spreadRadius: 1.0,
+                          color: Colors.black.withValues(alpha: 20),
+                          blurRadius: 3.0,
+                          spreadRadius: 2.0,
                           offset: Offset(0, 3),
                         ),
                       ],
@@ -136,7 +136,7 @@ class _BoardScreenState extends State<BoardScreen> {
                           bottom: 16,
                           child: Icon(
                             Icons.link,
-                            color: Colors.white.withOpacity(0.7),
+                            color: Colors.white.withValues(alpha: 179), // 0.7 * 255 = 178.5 ≈ 179
                             size: 24,
                           ),
                         ),
