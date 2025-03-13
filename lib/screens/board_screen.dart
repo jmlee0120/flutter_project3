@@ -1,5 +1,6 @@
 // lib/screens/board_screen.dart
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../models/post.dart';
 import '../services/post_service.dart';
 import 'create_post_screen.dart';
@@ -14,6 +15,58 @@ class BoardScreen extends StatefulWidget {
 
 class _BoardScreenState extends State<BoardScreen> {
   final PostService _postService = PostService();
+  int _currentBannerIndex = 0;
+  final PageController _bannerController = PageController();
+
+  // 배너 데이터 - 제목과 URL을 포함합니다.
+  final List<Map<String, String>> _banners = [
+    {
+      'title': 'MCPC',
+      'url': 'https://swift-graphs-363644.framer.app/', // 여기에 실제 URL을 넣으세요
+    },
+    {
+      'title': 'Office of International Affairs',
+      'url': 'https://global.hanyang.ac.kr/?intro_non', // 여기에 실제 URL을 넣으세요
+    },
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    // 배너 자동 슬라이드 설정
+    _startAutoSlide();
+  }
+
+  @override
+  void dispose() {
+    _bannerController.dispose();
+    super.dispose();
+  }
+
+  // 배너 자동 슬라이드 기능
+  void _startAutoSlide() {
+    Future.delayed(const Duration(seconds: 5), () {
+      if (mounted) {
+        final nextPage = (_currentBannerIndex + 1) % _banners.length;
+        _bannerController.animateToPage(
+          nextPage,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+        _startAutoSlide();
+      }
+    });
+  }
+
+  // URL 열기 기능
+  Future<void> _launchURL(String url) async {
+    final Uri uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.inAppWebView);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,22 +77,70 @@ class _BoardScreenState extends State<BoardScreen> {
           Container(
             height: 150,
             child: PageView.builder(
-              itemCount: 4,
+              controller: _bannerController,
+              itemCount: _banners.length,
+              onPageChanged: (index) {
+                setState(() {
+                  _currentBannerIndex = index;
+                });
+              },
               itemBuilder: (context, index) {
-                return Container(
-                  margin: const EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                    color: Colors.blue.shade200,
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                  child: const Center(
-                    child: Text(
-                      'Advertisement',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
+                final banner = _banners[index];
+                return GestureDetector(
+                  onTap: () {
+                    _launchURL(banner['url']!);
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                      color: index == 0 ? Colors.blue.shade300 : Colors.purple.shade300,
+                      borderRadius: BorderRadius.circular(12.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 5.0,
+                          spreadRadius: 1.0,
+                          offset: Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        // 배너 내용
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              banner['title']!,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            const Text(
+                              '탭하여 웹사이트 방문하기',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        // 우측 하단에 링크 아이콘 표시
+                        Positioned(
+                          right: 16,
+                          bottom: 16,
+                          child: Icon(
+                            Icons.link,
+                            color: Colors.white.withOpacity(0.7),
+                            size: 24,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 );
@@ -51,14 +152,16 @@ class _BoardScreenState extends State<BoardScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(
-              4,
+              _banners.length,
                   (index) => Container(
                 width: 8,
                 height: 8,
                 margin: const EdgeInsets.symmetric(horizontal: 4.0),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.grey.shade300,
+                  color: _currentBannerIndex == index
+                      ? Colors.blue.shade600
+                      : Colors.grey.shade300,
                 ),
               ),
             ),
