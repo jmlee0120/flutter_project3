@@ -384,7 +384,7 @@ class MeetupCard extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.7),
+                      color: Colors.black.withValues(alpha: 179), // withOpacity(0.7)를 withValues(alpha: 179)로 수정
                       borderRadius: BorderRadius.circular(15),
                     ),
                     child: Text(

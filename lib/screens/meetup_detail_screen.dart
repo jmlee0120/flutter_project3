@@ -81,8 +81,7 @@ class _MeetupDetailScreenState extends State<MeetupDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context);
-    final currentUserNickname = authProvider.userData?['nickname'] ?? '익명';
+    // currentUserNickname 변수 제거 (사용되지 않음)
 
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -181,9 +180,9 @@ class _MeetupDetailScreenState extends State<MeetupDetailScreen> {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: Colors.red.withOpacity(0.1),
+                  color: Colors.red.withValues(alpha: 26), // withOpacity(0.1)를 withValues(alpha: 26)으로 변경
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.red.withOpacity(0.3)),
+                  border: Border.all(color: Colors.red.withValues(alpha: 77)), // withOpacity(0.3)를 withValues(alpha: 77)으로 변경
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

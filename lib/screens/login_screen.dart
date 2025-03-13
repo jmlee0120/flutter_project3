@@ -38,7 +38,7 @@ class LoginScreen extends StatelessWidget {
                   // 로딩 상태가 아닐 때만 로그인 시도
                   if (!authProvider.isLoading) {
                     // Google 로그인 처리
-                    final success = await authProvider.signInWithGoogle();
+                    await authProvider.signInWithGoogle();
 
                     // 지연 추가 - 로그인 처리 시간 확보
                     await Future.delayed(const Duration(milliseconds: 1000));

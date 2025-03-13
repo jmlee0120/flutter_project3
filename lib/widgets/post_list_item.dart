@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart'; // 날짜 포맷용
 import '../models/post.dart';
 
 class PostListItem extends StatelessWidget {
@@ -13,6 +14,9 @@ class PostListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 날짜 포맷 - createdAt에서 추출
+    final formattedDate = DateFormat('yyyy-MM-dd').format(post.createdAt);
+
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       elevation: 2,
@@ -46,16 +50,16 @@ class PostListItem extends StatelessWidget {
                     children: [
                       // 날짜 표시
                       Text(
-                        post.formattedDate,
+                        formattedDate,
                         style: TextStyle(
                           color: Colors.grey[600],
                           fontSize: 12,
                         ),
                       ),
                       const SizedBox(height: 2),
-                      // 시간 표시
+                      // 시간 표시 - getFormattedTime() 메소드 사용
                       Text(
-                        post.formattedTime,
+                        post.getFormattedTime(),
                         style: TextStyle(
                           color: Colors.grey[600],
                           fontSize: 12,
@@ -66,8 +70,9 @@ class PostListItem extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 8),
+              // 내용 미리보기 - getPreviewContent() 메소드 사용
               Text(
-                post.previewContent,
+                post.getPreviewContent(),
                 style: const TextStyle(
                   fontSize: 14,
                   height: 1.3,

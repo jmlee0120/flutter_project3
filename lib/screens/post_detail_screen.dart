@@ -371,7 +371,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
               color: Colors.white,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.2),
+                  color: Colors.grey.withValues(alpha: 51), // withOpacity(0.2)를 withValues(alpha: 51)로 수정
                   spreadRadius: 1,
                   blurRadius: 3,
                   offset: const Offset(0, -1),
