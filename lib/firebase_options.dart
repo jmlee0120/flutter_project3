@@ -64,6 +64,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '700373659727',
     projectId: 'flutterproject3-af322',
     storageBucket: 'flutterproject3-af322.firebasestorage.app',
+    androidClientId: '700373659727-jlq5hvo6s7e6r1me4joh9ocj7skm9k1b.apps.googleusercontent.com',
+    iosClientId: '700373659727-t3t89luvegusfl5cfeogsuf55go3uqmu.apps.googleusercontent.com',
     iosBundleId: 'com.example.flutterPractice3',
   );
 
@@ -73,6 +75,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '700373659727',
     projectId: 'flutterproject3-af322',
     storageBucket: 'flutterproject3-af322.firebasestorage.app',
+    androidClientId: '700373659727-jlq5hvo6s7e6r1me4joh9ocj7skm9k1b.apps.googleusercontent.com',
+    iosClientId: '700373659727-t3t89luvegusfl5cfeogsuf55go3uqmu.apps.googleusercontent.com',
     iosBundleId: 'com.example.flutterPractice3',
   );
 
@@ -85,4 +89,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'flutterproject3-af322.firebasestorage.app',
     measurementId: 'G-2XVH1Q0T2E',
   );
+
 }

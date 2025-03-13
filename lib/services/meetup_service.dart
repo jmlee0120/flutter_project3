@@ -123,6 +123,44 @@ class MeetupService {
     });
   }
 
+  // 특정 ID의 모임 가져오기
+  Future<Meetup?> getMeetupById(String meetupId) async {
+    try {
+      final doc = await _firestore.collection('meetups').doc(meetupId).get();
+
+      if (!doc.exists || doc.data() == null) {
+        return null;
+      }
+
+      final data = doc.data()!;
+
+      // Timestamp에서 DateTime으로 변환
+      DateTime meetupDate;
+      if (data['date'] is Timestamp) {
+        meetupDate = (data['date'] as Timestamp).toDate();
+      } else {
+        // 기본값으로 현재 날짜 사용
+        meetupDate = DateTime.now();
+      }
+
+      return Meetup(
+        id: doc.id,
+        title: data['title'] ?? '',
+        description: data['description'] ?? '',
+        location: data['location'] ?? '',
+        time: data['time'] ?? '',
+        maxParticipants: data['maxParticipants'] ?? 0,
+        currentParticipants: data['currentParticipants'] ?? 1,
+        host: data['hostNickname'] ?? '익명',
+        imageUrl: AppConstants.DEFAULT_IMAGE_URL,
+        date: meetupDate,
+      );
+    } catch (e) {
+      print('모임 정보 불러오기 오류: $e');
+      return null;
+    }
+  }
+
   // 모임 목록 가져오기 (메모리 기반)
   List<List<Meetup>> getMeetupsByDayFromMemory() {
     // 현재 날짜 기준 일주일 날짜 계산
