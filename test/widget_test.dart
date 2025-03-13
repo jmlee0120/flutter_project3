@@ -5,7 +5,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MeetupHomePage extends StatefulWidget {
-  const MeetupHomePage({Key? key}) : super(key: key);
+  const MeetupHomePage({super.key});
 
   @override
   State<MeetupHomePage> createState() => _MeetupHomePageState();
@@ -164,20 +164,20 @@ class _MeetupHomePageState extends State<MeetupHomePage> with SingleTickerProvid
         onPressed: () {
           _showCreateMeetupDialog(context);
         },
-        child: const Icon(Icons.add),
         tooltip: '새 모임 만들기',
+        child: const Icon(Icons.add),
       ),
     );
   }
 
   void _showCreateMeetupDialog(BuildContext context) {
-    final _formKey = GlobalKey<FormState>();
-    TextEditingController _titleController = TextEditingController();
-    TextEditingController _descriptionController = TextEditingController();
-    TextEditingController _locationController = TextEditingController();
-    TextEditingController _timeController = TextEditingController();
-    TextEditingController _maxParticipantsController = TextEditingController(text: '5');
-    int _selectedDayIndex = _tabController.index;
+    final formKey = GlobalKey<FormState>();
+    TextEditingController titleController = TextEditingController();
+    TextEditingController descriptionController = TextEditingController();
+    TextEditingController locationController = TextEditingController();
+    TextEditingController timeController = TextEditingController();
+    TextEditingController maxParticipantsController = TextEditingController(text: '5');
+    int selectedDayIndex = _tabController.index;
 
     showDialog(
       context: context,
@@ -186,12 +186,12 @@ class _MeetupHomePageState extends State<MeetupHomePage> with SingleTickerProvid
           title: const Text('새 모임 만들기'),
           content: SingleChildScrollView(
             child: Form(
-              key: _formKey,
+              key: formKey,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   DropdownButtonFormField<int>(
-                    value: _selectedDayIndex,
+                    value: selectedDayIndex,
                     decoration: const InputDecoration(labelText: '요일'),
                     items: List.generate(
                       _days.length,
@@ -201,11 +201,11 @@ class _MeetupHomePageState extends State<MeetupHomePage> with SingleTickerProvid
                       ),
                     ),
                     onChanged: (value) {
-                      _selectedDayIndex = value!;
+                      selectedDayIndex = value!;
                     },
                   ),
                   TextFormField(
-                    controller: _titleController,
+                    controller: titleController,
                     decoration: const InputDecoration(labelText: '모임 제목'),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -215,20 +215,20 @@ class _MeetupHomePageState extends State<MeetupHomePage> with SingleTickerProvid
                     },
                   ),
                   TextFormField(
-                    controller: _descriptionController,
+                    controller: descriptionController,
                     decoration: const InputDecoration(labelText: '모임 설명'),
                     maxLines: 2,
                   ),
                   TextFormField(
-                    controller: _locationController,
+                    controller: locationController,
                     decoration: const InputDecoration(labelText: '장소'),
                   ),
                   TextFormField(
-                    controller: _timeController,
+                    controller: timeController,
                     decoration: const InputDecoration(labelText: '시간'),
                   ),
                   TextFormField(
-                    controller: _maxParticipantsController,
+                    controller: maxParticipantsController,
                     decoration: const InputDecoration(labelText: '최대 참가 인원'),
                     keyboardType: TextInputType.number,
                   ),
@@ -245,24 +245,24 @@ class _MeetupHomePageState extends State<MeetupHomePage> with SingleTickerProvid
             ),
             ElevatedButton(
               onPressed: () {
-                if (_formKey.currentState!.validate()) {
+                if (formKey.currentState!.validate()) {
                   setState(() {
                     final newId = DateTime.now().millisecondsSinceEpoch;
                     final newMeetup = Meetup(
                       id: newId,
-                      title: _titleController.text,
-                      description: _descriptionController.text,
-                      location: _locationController.text,
-                      time: _timeController.text,
-                      maxParticipants: int.tryParse(_maxParticipantsController.text) ?? 5,
+                      title: titleController.text,
+                      description: descriptionController.text,
+                      location: locationController.text,
+                      time: timeController.text,
+                      maxParticipants: int.tryParse(maxParticipantsController.text) ?? 5,
                       currentParticipants: 1, // 호스트 포함
                       host: '나',
                       imageUrl: 'https://via.placeholder.com/150',
                     );
-                    _meetupsByDay[_selectedDayIndex].add(newMeetup);
+                    _meetupsByDay[selectedDayIndex].add(newMeetup);
                   });
                   Navigator.of(context).pop();
-                  _tabController.animateTo(_selectedDayIndex);
+                  _tabController.animateTo(selectedDayIndex);
                 }
               },
               child: const Text('만들기'),
@@ -280,11 +280,11 @@ class DayMeetupList extends StatelessWidget {
   final Function(Meetup) onJoinMeetup;
 
   const DayMeetupList({
-    Key? key,
+    super.key,
     required this.dayIndex,
     required this.meetups,
     required this.onJoinMeetup,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -341,10 +341,10 @@ class MeetupCard extends StatelessWidget {
   final Function(Meetup) onJoinMeetup;
 
   const MeetupCard({
-    Key? key,
+    super.key,
     required this.meetup,
     required this.onJoinMeetup,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

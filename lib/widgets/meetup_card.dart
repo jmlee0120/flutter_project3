@@ -1,179 +1,125 @@
+// lib/widgets/meetup_card.dart
 import 'package:flutter/material.dart';
 import '../models/meetup.dart';
 import '../constants/app_constants.dart';
+import '../screens/meetup_detail_screen.dart';
 
 class MeetupCard extends StatelessWidget {
   final Meetup meetup;
   final Function(Meetup) onJoinMeetup;
+  final String meetupId; // 이미 String 타입
+  final Function onMeetupDeleted;
 
   const MeetupCard({
     Key? key,
     required this.meetup,
     required this.onJoinMeetup,
+    required this.meetupId, // 이미 String으로 정의됨
+    required this.onMeetupDeleted,
   }) : super(key: key);
+
+  String _getStatusButton() {
+    final isFull = meetup.currentParticipants >= meetup.maxParticipants;
+    return isFull ? AppConstants.FULL : AppConstants.JOIN;
+  }
 
   @override
   Widget build(BuildContext context) {
+    final status = _getStatusButton();
     final isFull = meetup.currentParticipants >= meetup.maxParticipants;
 
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 모임 이미지
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-            child: Stack(
-              children: [
-                Image.network(
-                  meetup.imageUrl,
-                  height: 120,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      height: 120,
-                      width: double.infinity,
-                      color: Colors.grey[300],
-                      child: const Icon(Icons.image, size: 50, color: Colors.grey),
-                    );
-                  },
-                ),
-                Positioned(
-                  top: 8,
-                  right: 8,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.7),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Text(
-                      '${meetup.currentParticipants}/${meetup.maxParticipants}명',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+    return InkWell(
+      onTap: () {
+        // 모임 상세 화면 표시
+        showDialog(
+          context: context,
+          builder: (context) => MeetupDetailScreen(
+            meetup: meetup,
+            meetupId: meetupId, // meetup.id.toString() 변환 제거
+            onMeetupDeleted: onMeetupDeleted,
           ),
-
-          // 모임 내용
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  meetup.title,
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            children: [
+              // 시간 컬럼
+              SizedBox(
+                width: 50,
+                child: Text(
+                  meetup.time,
                   style: const TextStyle(
-                    fontSize: 18,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 4),
-                // 모임 날짜 정보 표시
-                Row(
-                  children: [
-                    const Icon(Icons.event, size: 16, color: Colors.redAccent),
-                    const SizedBox(width: 4),
-                    Text(
-                      meetup.getFormattedDate(),
-                      style: const TextStyle(
-                        color: Colors.redAccent,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    const Icon(Icons.person, size: 16, color: Colors.grey),
-                    const SizedBox(width: 4),
-                    Text(
-                      '${AppConstants.HOST}${meetup.host}',
-                      style: TextStyle(
-                        color: Colors.grey[700],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    const Icon(Icons.location_on, size: 16, color: Colors.grey),
-                    const SizedBox(width: 4),
-                    Text(
-                      meetup.location,
-                      style: TextStyle(
-                        color: Colors.grey[700],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    const Icon(Icons.access_time, size: 16, color: Colors.grey),
-                    const SizedBox(width: 4),
-                    Text(
-                      meetup.time,
-                      style: TextStyle(
-                        color: Colors.grey[700],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  meetup.description,
-                  style: const TextStyle(fontSize: 14),
-                ),
-              ],
-            ),
-          ),
+              ),
 
-          // 참여 버튼
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: ElevatedButton(
-              onPressed: isFull
-                  ? null
-                  : () {
-                onJoinMeetup(meetup);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('${meetup.title}${AppConstants.JOINED_MEETUP}'),
-                    duration: const Duration(seconds: 2),
+              // 모임 내용 컬럼
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      meetup.title,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Icon(Icons.person, size: 14, color: Colors.blue),
+                        Text(
+                          ' ${meetup.currentParticipants}',
+                          style: TextStyle(color: Colors.blue),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+
+              // 참여 버튼
+              SizedBox(
+                width: 60,
+                child: GestureDetector(
+                  onTap: isFull ? null : () {
+                    onJoinMeetup(meetup);
+                    // 신청 완료 메시지 표시
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('${meetup.title}${AppConstants.JOINED_MEETUP}'),
+                        duration: const Duration(seconds: 2),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                    decoration: BoxDecoration(
+                      color: isFull ? Colors.grey[200] : Colors.red,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Center(
+                      child: Text(
+                        status,
+                        style: TextStyle(
+                          color: isFull ? Colors.black : Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
                   ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
                 ),
               ),
-              child: Text(
-                isFull ? AppConstants.FULL : AppConstants.JOIN,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

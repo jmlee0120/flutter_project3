@@ -1,5 +1,5 @@
 class Meetup {
-  final int id;
+  final String id;
   final String title;
   final String description;
   final String location;
@@ -24,7 +24,7 @@ class Meetup {
   });
 
   Meetup copyWith({
-    int? id,
+    String? id,
     String? title,
     String? description,
     String? location,

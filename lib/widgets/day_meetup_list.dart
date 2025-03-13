@@ -1,14 +1,15 @@
+// lib/widgets/day_meetup_list.dart
 import 'package:flutter/material.dart';
 import '../models/meetup.dart';
 import 'meetup_card.dart';
 import '../constants/app_constants.dart';
-import '../screens/home_screen.dart';
 
 class DayMeetupList extends StatelessWidget {
   final int dayIndex;
   final List<Meetup> meetups;
   final Function(Meetup) onJoinMeetup;
   final Function(BuildContext) onCreateMeetup;
+  final Function onMeetupDeleted;
 
   const DayMeetupList({
     Key? key,
@@ -16,6 +17,7 @@ class DayMeetupList extends StatelessWidget {
     required this.meetups,
     required this.onJoinMeetup,
     required this.onCreateMeetup,
+    required this.onMeetupDeleted,
   }) : super(key: key);
 
   @override
@@ -48,14 +50,20 @@ class DayMeetupList extends StatelessWidget {
       );
     }
 
-    return ListView.builder(
+    return ListView.separated(
       itemCount: meetups.length,
       padding: const EdgeInsets.symmetric(vertical: 8),
+      separatorBuilder: (context, index) => Divider(
+        color: Colors.grey[200],
+        height: 1,
+      ),
       itemBuilder: (context, index) {
         final meetup = meetups[index];
         return MeetupCard(
           meetup: meetup,
           onJoinMeetup: onJoinMeetup,
+          meetupId: meetup.id, // 이제 이미 String 타입이므로 변환 필요 없음
+          onMeetupDeleted: onMeetupDeleted,
         );
       },
     );
