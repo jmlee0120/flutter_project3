@@ -1,5 +1,6 @@
 // lib/screens/board_screen.dart
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../models/post.dart';
 import '../services/post_service.dart';
@@ -22,11 +23,11 @@ class _BoardScreenState extends State<BoardScreen> {
   final List<Map<String, String>> _banners = [
     {
       'title': 'MCPC',
-      'url': 'https://swift-graphs-363644.framer.app/', // 여기에 실제 URL을 넣으세요
+      'url': 'https://swift-graphs-363644.framer.app/',
     },
     {
       'title': 'Office of International Affairs',
-      'url': 'https://global.hanyang.ac.kr/?intro_non', // 여기에 실제 URL을 넣으세요
+      'url': 'https://global.hanyang.ac.kr/?intro_non',
     },
   ];
 
@@ -60,11 +61,20 @@ class _BoardScreenState extends State<BoardScreen> {
 
   // URL 열기 기능
   Future<void> _launchURL(String url) async {
-    final Uri uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.inAppWebView);
-    } else {
-      throw 'Could not launch $url';
+    try {
+      final Uri uri = Uri.parse(url);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.inAppWebView);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('URL을 열 수 없습니다: $url')),
+        );
+      }
+    } catch (e) {
+      print('URL 오류: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('URL 오류: $e')),
+      );
     }
   }
 
@@ -97,9 +107,9 @@ class _BoardScreenState extends State<BoardScreen> {
                       borderRadius: BorderRadius.circular(12.0),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 20),
-                          blurRadius: 3.0,
-                          spreadRadius: 2.0,
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 5.0,
+                          spreadRadius: 1.0,
                           offset: Offset(0, 3),
                         ),
                       ],
@@ -136,7 +146,7 @@ class _BoardScreenState extends State<BoardScreen> {
                           bottom: 16,
                           child: Icon(
                             Icons.link,
-                            color: Colors.white.withValues(alpha: 179), // 0.7 * 255 = 178.5 ≈ 179
+                            color: Colors.white.withOpacity(0.7),
                             size: 24,
                           ),
                         ),
@@ -289,33 +299,39 @@ class _BoardScreenState extends State<BoardScreen> {
                                     fontSize: 12,
                                   ),
                                 ),
+                                const Spacer(),
+
+                                // 좋아요 아이콘 및 개수
+                                if (post.likes > 0) ...[
+                                  Icon(
+                                    Icons.favorite,
+                                    size: 14,
+                                    color: Colors.red[400],
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    '${post.likes}',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey[600],
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                ],
+
                                 // 댓글 개수 표시
                                 if (post.commentCount > 0) ...[
-                                  const SizedBox(width: 8),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                    decoration: BoxDecoration(
-                                      color: Colors.blue[50],
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Icon(
-                                          Icons.chat_bubble_outline,
-                                          size: 12,
-                                          color: Colors.blue[700],
-                                        ),
-                                        const SizedBox(width: 4),
-                                        Text(
-                                          '${post.commentCount}',
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color: Colors.blue[700],
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
+                                  Icon(
+                                    Icons.chat_bubble_outline,
+                                    size: 14,
+                                    color: Colors.blue[700],
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    '${post.commentCount}',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey[600],
                                     ),
                                   ),
                                 ],

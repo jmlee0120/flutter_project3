@@ -6,7 +6,9 @@ class Post {
   final String author;
   final DateTime createdAt;
   final String userId;
-  final int commentCount; // 댓글 개수 필드 추가
+  final int commentCount;
+  final int likes;           // 좋아요 수
+  final List<String> likedBy; // 좋아요 누른 사용자 ID 목록
 
   Post({
     required this.id,
@@ -15,7 +17,9 @@ class Post {
     required this.author,
     required this.createdAt,
     required this.userId,
-    this.commentCount = 0, // 기본값 0
+    this.commentCount = 0,
+    this.likes = 0,
+    this.likedBy = const [],
   });
 
   // 게시글 생성 시간을 표시 형식으로 변환
@@ -40,5 +44,10 @@ class Post {
       return content;
     }
     return '${content.substring(0, 50)}...';
+  }
+
+  // 현재 사용자가 이 게시글에 좋아요를 눌렀는지 확인
+  bool isLikedByUser(String userId) {
+    return likedBy.contains(userId);
   }
 }
