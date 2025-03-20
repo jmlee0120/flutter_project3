@@ -35,17 +35,17 @@ class MeetupApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'David C.', // 앱 제목 변경
+      title: 'David C.',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        fontFamily: 'Roboto', // 더 단단해 보이는 폰트로 변경
+        scaffoldBackgroundColor: Colors.white,
+        fontFamily: 'Roboto',
       ),
       home: Consumer<AuthProvider>(
         builder: (context, authProvider, _) {
-          // 로그인 상태 확인 중
           if (authProvider.isLoading) {
             return const Scaffold(
-              backgroundColor: Color(0xFFDEEFFF), // 연한 하늘색 배경
+              backgroundColor: Color(0xFFDEEFFF),
               body: Center(
                 child: CircularProgressIndicator(),
               ),
