@@ -53,15 +53,10 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       // 모든 화면에서 공통으로 사용할 AppBar
       appBar: AppBar(
-        title: const Text(
-          'David C.',
-          style: TextStyle(
-            fontWeight: FontWeight.w800,
-            fontSize: 20,
-            color: Colors.green,
-            fontFamily: 'Roboto',
-            letterSpacing: 1.2,
-          ),
+        title: Image.asset(
+          'assets/icons/macaron_appbarlogo.png',
+          height: 25,  // Adjust the height as needed
+          fit: BoxFit.contain,
         ),
         centerTitle: false,
         elevation: 0,
