@@ -32,8 +32,8 @@ class PostService {
         'createdAt': now,
         'updatedAt': now,
         'likes': 0,
-        'comments': [],
-        'commentCount': 0, // 댓글 개수 초기값 추가
+        'likedBy': [],
+        'commentCount': 0,
       };
 
       // Firestore에 저장
@@ -44,7 +44,7 @@ class PostService {
     }
   }
 
-  // 모든 게시글 가져오기 (추가된 메서드)
+  // 모든 게시글 가져오기
   Stream<List<Post>> getAllPosts() {
     return _firestore
         .collection('posts')
@@ -62,7 +62,9 @@ class PostService {
               ? (data['createdAt'] as Timestamp).toDate()
               : DateTime.now(),
           userId: data['userId'] ?? '',
-          commentCount: data['commentCount'] ?? 0, // 댓글 개수 필드 추가
+          commentCount: data['commentCount'] ?? 0,
+          likes: data['likes'] ?? 0,
+          likedBy: List<String>.from(data['likedBy'] ?? []),
         );
       }).toList();
     });
@@ -84,11 +86,84 @@ class PostService {
             ? (data['createdAt'] as Timestamp).toDate()
             : DateTime.now(),
         userId: data['userId'] ?? '',
-        commentCount: data['commentCount'] ?? 0, // 댓글 개수 추가
+        commentCount: data['commentCount'] ?? 0,
+        likes: data['likes'] ?? 0,
+        likedBy: List<String>.from(data['likedBy'] ?? []),
       );
     } catch (e) {
       print('게시글 조회 오류: $e');
       return null;
+    }
+  }
+
+  Future<bool> toggleLike(String postId) async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) {
+        print('좋아요 실패: 로그인이 필요합니다.');
+        return false;
+      }
+
+      // 트랜잭션 대신 더 간단한 접근 방식 사용
+      // 게시글 문서 레퍼런스
+      final postRef = _firestore.collection('posts').doc(postId);
+
+      // 게시글 데이터 가져오기
+      final postDoc = await postRef.get();
+      if (!postDoc.exists) {
+        print('게시글이 존재하지 않습니다: $postId');
+        return false;
+      }
+
+      // 현재 좋아요 상태 파악
+      final data = postDoc.data()!;
+      List<dynamic> likedBy = List.from(data['likedBy'] ?? []);
+      bool hasLiked = likedBy.contains(user.uid);
+
+      print('현재 좋아요 상태: $hasLiked, 사용자 ID: ${user.uid}, 게시글 ID: $postId');
+
+      // 좋아요 토글
+      if (hasLiked) {
+        // 좋아요 취소
+        likedBy.remove(user.uid);
+        await postRef.update({
+          'likedBy': likedBy,
+          'likes': FieldValue.increment(-1),
+        });
+        print('좋아요 취소 완료');
+      } else {
+        // 좋아요 추가
+        likedBy.add(user.uid);
+        await postRef.update({
+          'likedBy': likedBy,
+          'likes': FieldValue.increment(1),
+        });
+        print('좋아요 추가 완료');
+      }
+
+      return true;
+    } catch (e) {
+      print('좋아요 기능 오류: $e');
+      return false;
+    }
+  }
+
+  // 현재 사용자가 좋아요를 눌렀는지 확인
+  Future<bool> hasUserLikedPost(String postId) async {
+    final user = _auth.currentUser;
+    if (user == null) return false;
+
+    try {
+      final doc = await _firestore.collection('posts').doc(postId).get();
+      if (!doc.exists) return false;
+
+      final data = doc.data()!;
+      List<dynamic> likedBy = List.from(data['likedBy'] ?? []);
+
+      return likedBy.contains(user.uid);
+    } catch (e) {
+      print('좋아요 확인 오류: $e');
+      return false;
     }
   }
 
