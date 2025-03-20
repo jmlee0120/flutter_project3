@@ -15,8 +15,10 @@ class BoardScreen extends StatefulWidget {
 
 class _BoardScreenState extends State<BoardScreen> {
   final PostService _postService = PostService();
-  int _currentBannerIndex = 0;
   final PageController _bannerController = PageController();
+  
+  // 배너 인디케이터 상태를 위한 ValueNotifier 추가
+  final ValueNotifier<int> _currentBannerIndex = ValueNotifier<int>(0);
 
   // 배너 데이터 - 제목과 URL을 포함합니다.
   final List<Map<String, String>> _banners = [
@@ -39,15 +41,17 @@ class _BoardScreenState extends State<BoardScreen> {
 
   @override
   void dispose() {
+    // ValueNotifier 해제 추가
+    _currentBannerIndex.dispose();
     _bannerController.dispose();
     super.dispose();
   }
 
-  // 배너 자동 슬라이드 기능
+  // 배너 자동 슬라이드 기능 수정
   void _startAutoSlide() {
     Future.delayed(const Duration(seconds: 5), () {
       if (mounted) {
-        final nextPage = (_currentBannerIndex + 1) % _banners.length;
+        final nextPage = (_currentBannerIndex.value + 1) % _banners.length;
         _bannerController.animateToPage(
           nextPage,
           duration: const Duration(milliseconds: 500),
@@ -80,9 +84,8 @@ class _BoardScreenState extends State<BoardScreen> {
               controller: _bannerController,
               itemCount: _banners.length,
               onPageChanged: (index) {
-                setState(() {
-                  _currentBannerIndex = index;
-                });
+                // setState 대신 ValueNotifier 값 변경
+                _currentBannerIndex.value = index;
               },
               itemBuilder: (context, index) {
                 final banner = _banners[index];
@@ -148,25 +151,30 @@ class _BoardScreenState extends State<BoardScreen> {
             ),
           ),
 
-          // 배너 인디케이터
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(
-              _banners.length,
+          // 배너 인디케이터 ValueListenableBuilder로 변경
+          ValueListenableBuilder<int>(
+            valueListenable: _currentBannerIndex,
+            builder: (context, currentIndex, _) {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(
+                  _banners.length,
                   (index) => Container(
-                width: 8,
-                height: 8,
-                margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: _currentBannerIndex == index
-                      ? Colors.blue.shade600
-                      : Colors.grey.shade300,
+                    width: 8,
+                    height: 8,
+                    margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: currentIndex == index
+                          ? Colors.blue.shade600
+                          : Colors.grey.shade300,
+                    ),
+                  ),
                 ),
-              ),
-            ),
+              );
+            }
           ),
-
+          
           // 게시글 목록 헤더
           Padding(
             padding: const EdgeInsets.all(16.0),
