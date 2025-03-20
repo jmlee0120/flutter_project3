@@ -79,7 +79,7 @@ class MeetupService {
     }
   }
 
-  // 요일별 모임 가져오기
+  // 요일별 모임 가져오기 - 모든 모임 표시
   Stream<List<Meetup>> getMeetupsByDay(int dayIndex) {
     // 해당 요일의 날짜 계산 (현재 날짜 기준)
     final List<DateTime> weekDates = getWeekDates();
@@ -161,63 +161,16 @@ class MeetupService {
     }
   }
 
-  // 모임 목록 가져오기 (메모리 기반)
+  // 모임 목록 가져오기 (메모리 기반) - 예시 모임 데이터 제거
   List<List<Meetup>> getMeetupsByDayFromMemory() {
     // 현재 날짜 기준 일주일 날짜 계산
     final List<DateTime> weekDates = getWeekDates();
 
-    return List.generate(
-        7,
-            (dayIndex) {
-          // 해당 요일 날짜 가져오기
-          final DateTime dayDate = weekDates[dayIndex];
-
-          return [
-            if (dayIndex == 0) ...[
-              Meetup(
-                id: "1", // String으로 변경
-                title: '오왕러 커피에서 말자\n라떼 한 잔 어때세요?',
-                description: '한강에서 함께 달려요! 초보자도 환영합니다.',
-                location: '잠실한강공원',
-                time: '18:00',
-                maxParticipants: 3,
-                currentParticipants: 3,
-                host: '러너김',
-                imageUrl: AppConstants.DEFAULT_IMAGE_URL,
-                date: dayDate,
-              ),
-            ],
-            if (dayIndex == 2) ...[
-              Meetup(
-                id: "3", // String으로 변경
-                title: '수요일 코딩 스터디',
-                description: 'Flutter 스터디 모임입니다. 기초부터 함께해요!',
-                location: '선릉역 근처 스터디카페',
-                time: '20:00',
-                maxParticipants: 6,
-                currentParticipants: 2,
-                host: '개발자박',
-                imageUrl: AppConstants.DEFAULT_IMAGE_URL,
-                date: dayDate,
-              ),
-            ],
-            if (dayIndex == 5) ...[
-              Meetup(
-                id: "5", // String으로 변경
-                title: '주말 등산 모임',
-                description: '북한산 등산! 도시락 챙겨오세요~',
-                location: '북한산 국립공원 입구',
-                time: '09:00',
-                maxParticipants: 15,
-                currentParticipants: 7,
-                host: '산돌이',
-                imageUrl: AppConstants.DEFAULT_IMAGE_URL,
-                date: dayDate,
-              ),
-            ],
-          ];
-        }
-    );
+    // 예시 데이터를 제거하고 빈 목록 반환 (실제 데이터는 Firebase에서 가져옴)
+    return List.generate(7, (dayIndex) {
+      final DateTime dayDate = weekDates[dayIndex];
+      return []; // 빈 배열 반환 (예시 데이터 삭제)
+    });
   }
 
   // 특정 요일에 해당하는 날짜 계산
