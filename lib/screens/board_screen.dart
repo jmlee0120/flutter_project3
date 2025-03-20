@@ -15,8 +15,6 @@ class BoardScreen extends StatefulWidget {
 
 class _BoardScreenState extends State<BoardScreen> {
   final PostService _postService = PostService();
-  int _currentBannerIndex = 0;
-  final PageController _bannerController = PageController();
 
   // 배너 데이터 - 제목과 URL을 포함합니다.
   final List<Map<String, String>> _banners = [
@@ -31,141 +29,12 @@ class _BoardScreenState extends State<BoardScreen> {
   ];
 
   @override
-  void initState() {
-    super.initState();
-    // 배너 자동 슬라이드 설정
-    _startAutoSlide();
-  }
-
-  @override
-  void dispose() {
-    _bannerController.dispose();
-    super.dispose();
-  }
-
-  // 배너 자동 슬라이드 기능
-  void _startAutoSlide() {
-    Future.delayed(const Duration(seconds: 5), () {
-      if (mounted) {
-        final nextPage = (_currentBannerIndex + 1) % _banners.length;
-        _bannerController.animateToPage(
-          nextPage,
-          duration: const Duration(milliseconds: 500),
-          curve: Curves.easeInOut,
-        );
-        _startAutoSlide();
-      }
-    });
-  }
-
-  // URL 열기 기능
-  Future<void> _launchURL(String url) async {
-    final Uri uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.inAppWebView);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
-          // 광고 배너 (슬라이드 박스)
-          Container(
-            height: 150,
-            child: PageView.builder(
-              controller: _bannerController,
-              itemCount: _banners.length,
-              onPageChanged: (index) {
-                setState(() {
-                  _currentBannerIndex = index;
-                });
-              },
-              itemBuilder: (context, index) {
-                final banner = _banners[index];
-                return GestureDetector(
-                  onTap: () {
-                    _launchURL(banner['url']!);
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.all(8.0),
-                    decoration: BoxDecoration(
-                      color: index == 0 ? Colors.blue.shade300 : Colors.purple.shade300,
-                      borderRadius: BorderRadius.circular(12.0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 20),
-                          blurRadius: 3.0,
-                          spreadRadius: 2.0,
-                          offset: Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        // 배너 내용
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              banner['title']!,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            const Text(
-                              '탭하여 웹사이트 방문하기',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 14,
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        // 우측 하단에 링크 아이콘 표시
-                        Positioned(
-                          right: 16,
-                          bottom: 16,
-                          child: Icon(
-                            Icons.link,
-                            color: Colors.white.withValues(alpha: 179), // 0.7 * 255 = 178.5 ≈ 179
-                            size: 24,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-
-          // 배너 인디케이터
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(
-              _banners.length,
-                  (index) => Container(
-                width: 8,
-                height: 8,
-                margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: _currentBannerIndex == index
-                      ? Colors.blue.shade600
-                      : Colors.grey.shade300,
-                ),
-              ),
-            ),
-          ),
+          // 분리된 배너 컴포넌트 사용
+          BannerSlider(banners: _banners),
 
           // 게시글 목록 헤더
           Padding(
@@ -364,6 +233,154 @@ class _BoardScreenState extends State<BoardScreen> {
         backgroundColor: Colors.blue,
         child: const Icon(Icons.edit),
       ),
+    );
+  }
+}
+
+// 배너 위젯을 별도 StatefulWidget으로 추출
+class BannerSlider extends StatefulWidget {
+  final List<Map<String, String>> banners;
+  
+  const BannerSlider({Key? key, required this.banners}) : super(key: key);
+  
+  @override
+  _BannerSliderState createState() => _BannerSliderState();
+}
+
+class _BannerSliderState extends State<BannerSlider> {
+  int _currentBannerIndex = 0;
+  final PageController _bannerController = PageController();
+  
+  @override
+  void initState() {
+    super.initState();
+    _startAutoSlide();
+  }
+  
+  @override
+  void dispose() {
+    _bannerController.dispose();
+    super.dispose();
+  }
+  
+  void _startAutoSlide() {
+    Future.delayed(const Duration(seconds: 5), () {
+      if (mounted) {
+        final nextPage = (_currentBannerIndex + 1) % widget.banners.length;
+        _bannerController.animateToPage(
+          nextPage,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+        _startAutoSlide();
+      }
+    });
+  }
+  
+  Future<void> _launchURL(String url) async {
+    final Uri uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.inAppWebView);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+  
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        // 광고 배너 (슬라이드 박스)
+        Container(
+          height: 150,
+          child: PageView.builder(
+            controller: _bannerController,
+            itemCount: widget.banners.length,
+            onPageChanged: (index) {
+              setState(() {
+                _currentBannerIndex = index;
+              });
+            },
+            itemBuilder: (context, index) {
+              final banner = widget.banners[index];
+              return GestureDetector(
+                onTap: () {
+                  _launchURL(banner['url']!);
+                },
+                child: Container(
+                  margin: const EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    color: index == 0 ? Colors.blue.shade300 : Colors.purple.shade300,
+                    borderRadius: BorderRadius.circular(12.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.08),
+                        blurRadius: 3.0,
+                        spreadRadius: 2.0,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            banner['title']!,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          const Text(
+                            '탭하여 웹사이트 방문하기',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Positioned(
+                        right: 16,
+                        bottom: 16,
+                        child: Icon(
+                          Icons.link,
+                          color: Colors.white.withOpacity(0.7),
+                          size: 24,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+
+        // 배너 인디케이터
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(
+            widget.banners.length,
+            (index) => Container(
+              width: 8,
+              height: 8,
+              margin: const EdgeInsets.symmetric(horizontal: 4.0),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: _currentBannerIndex == index
+                    ? Colors.blue.shade600
+                    : Colors.grey.shade300,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
