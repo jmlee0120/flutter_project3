@@ -5,7 +5,7 @@ import '../models/post.dart';
 import '../services/post_service.dart';
 import 'create_post_screen.dart';
 import 'post_detail_screen.dart';
-
+'''야옹'''
 class BoardScreen extends StatefulWidget {
   const BoardScreen({Key? key}) : super(key: key);
 
