@@ -167,7 +167,7 @@ class _UserMeetupsScreenState extends State<UserMeetupsScreen> with SingleTicker
                       Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: Colors.blue.withOpacity(0.1),
+                          color: Colors.blue.withAlpha(26),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Column(
@@ -191,7 +191,7 @@ class _UserMeetupsScreenState extends State<UserMeetupsScreen> with SingleTicker
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                               decoration: BoxDecoration(
-                                color: statusColor.withOpacity(0.2),
+                                color: statusColor.withAlpha(51),
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: Text(
@@ -249,9 +249,9 @@ class _UserMeetupsScreenState extends State<UserMeetupsScreen> with SingleTicker
                                   Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                     decoration: BoxDecoration(
-                                      color: Colors.red.withOpacity(0.1),
+                                      color: Colors.red.withAlpha(26),
                                       borderRadius: BorderRadius.circular(4),
-                                      border: Border.all(color: Colors.red.withOpacity(0.3)),
+                                      border: Border.all(color: Colors.red.withAlpha(77)),
                                     ),
                                     child: Text(
                                       '마감',
