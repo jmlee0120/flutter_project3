@@ -1,4 +1,6 @@
 // lib/models/post.dart
+import 'package:intl/intl.dart';
+
 class Post {
   final String id;
   final String title;
@@ -27,7 +29,10 @@ class Post {
     final now = DateTime.now();
     final difference = now.difference(createdAt);
 
-    if (difference.inDays > 0) {
+    if (difference.inDays > 7) {
+      // 일주일 이상 지난 경우 날짜 표시
+      return DateFormat('yyyy.MM.dd').format(createdAt);
+    } else if (difference.inDays > 0) {
       return '${difference.inDays}일 전';
     } else if (difference.inHours > 0) {
       return '${difference.inHours}시간 전';
@@ -38,16 +43,41 @@ class Post {
     }
   }
 
-  // 미리보기용 내용 (최대 50자)
+  // 미리보기용 내용 (최대 100자)
   String getPreviewContent() {
-    if (content.length <= 50) {
+    if (content.length <= 100) {
       return content;
     }
-    return '${content.substring(0, 50)}...';
+    return '${content.substring(0, 100)}...';
   }
 
   // 현재 사용자가 이 게시글에 좋아요를 눌렀는지 확인
   bool isLikedByUser(String userId) {
     return likedBy.contains(userId);
+  }
+
+  // Post 객체 복제 메서드 (필요시 데이터 업데이트에 사용)
+  Post copyWith({
+    String? id,
+    String? title,
+    String? content,
+    String? author,
+    DateTime? createdAt,
+    String? userId,
+    int? commentCount,
+    int? likes,
+    List<String>? likedBy,
+  }) {
+    return Post(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      content: content ?? this.content,
+      author: author ?? this.author,
+      createdAt: createdAt ?? this.createdAt,
+      userId: userId ?? this.userId,
+      commentCount: commentCount ?? this.commentCount,
+      likes: likes ?? this.likes,
+      likedBy: likedBy ?? this.likedBy,
+    );
   }
 }

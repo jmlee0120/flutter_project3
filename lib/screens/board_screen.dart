@@ -16,7 +16,7 @@ class BoardScreen extends StatefulWidget {
 class _BoardScreenState extends State<BoardScreen> {
   final PostService _postService = PostService();
   final PageController _bannerController = PageController();
-  
+
   // 배너 인디케이터 상태를 위한 ValueNotifier 추가
   final ValueNotifier<int> _currentBannerIndex = ValueNotifier<int>(0);
 
@@ -153,28 +153,28 @@ class _BoardScreenState extends State<BoardScreen> {
 
           // 배너 인디케이터 ValueListenableBuilder로 변경
           ValueListenableBuilder<int>(
-            valueListenable: _currentBannerIndex,
-            builder: (context, currentIndex, _) {
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(
-                  _banners.length,
-                  (index) => Container(
-                    width: 8,
-                    height: 8,
-                    margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: currentIndex == index
-                          ? Colors.blue.shade600
-                          : Colors.grey.shade300,
+              valueListenable: _currentBannerIndex,
+              builder: (context, currentIndex, _) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(
+                    _banners.length,
+                        (index) => Container(
+                      width: 8,
+                      height: 8,
+                      margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: currentIndex == index
+                            ? Colors.blue.shade600
+                            : Colors.grey.shade300,
+                      ),
                     ),
                   ),
-                ),
-              );
-            }
+                );
+              }
           ),
-          
+
           // 게시글 목록 헤더
           Padding(
             padding: const EdgeInsets.all(16.0),
@@ -297,6 +297,36 @@ class _BoardScreenState extends State<BoardScreen> {
                                     fontSize: 12,
                                   ),
                                 ),
+                                // 좋아요 개수 표시 추가
+                                if (post.likes > 0) ...[
+                                  const SizedBox(width: 8),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: Colors.red[50],
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          Icons.favorite,
+                                          size: 12,
+                                          color: Colors.red[400],
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          '${post.likes}',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.red[400],
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
                                 // 댓글 개수 표시
                                 if (post.commentCount > 0) ...[
                                   const SizedBox(width: 8),

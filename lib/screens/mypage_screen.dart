@@ -1,10 +1,21 @@
 // lib/screens/mypage_screen.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_practice3/screens/user_meetups_screens.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
+import '../services/user_stats_service.dart';
+//import 'user_meetups_screens.dart';
+import 'user_posts_screen.dart';
 
-class MyPageScreen extends StatelessWidget {
+class MyPageScreen extends StatefulWidget {
   const MyPageScreen({Key? key}) : super(key: key);
+
+  @override
+  State<MyPageScreen> createState() => _MyPageScreenState();
+}
+
+class _MyPageScreenState extends State<MyPageScreen> {
+  final UserStatsService _userStatsService = UserStatsService();
 
   @override
   Widget build(BuildContext context) {
@@ -73,6 +84,32 @@ class MyPageScreen extends StatelessWidget {
                                 color: Colors.grey[600],
                               ),
                             ),
+                            const SizedBox(height: 4),
+                            // 받은 좋아요 개수 표시 추가
+                            StreamBuilder<int>(
+                              stream: _userStatsService.getUserTotalLikes(),
+                              builder: (context, snapshot) {
+                                final likeCount = snapshot.data ?? 0;
+                                return Row(
+                                  children: [
+                                    Icon(
+                                      Icons.favorite,
+                                      size: 16,
+                                      color: Colors.red[400],
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      'x$likeCount',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.red[400],
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
                           ],
                         ),
                       ),
@@ -115,15 +152,38 @@ class MyPageScreen extends StatelessWidget {
 
             const Divider(),
 
-            // 활동 통계
+            // 활동 통계 - 실시간 데이터 연동 (숫자만 표시)
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  _buildStat('참여 모임', '0'),
-                  _buildStat('작성 게시글', '0'),
-                  _buildStat('받은 좋아요', '0'),
+                  // 주최한 모임 통계
+                  StreamBuilder<int>(
+                    stream: _userStatsService.getHostedMeetupCount(),
+                    builder: (context, snapshot) {
+                      final count = snapshot.data ?? 0;
+                      return _buildStatDisplay('주최한 모임', count.toString());
+                    },
+                  ),
+
+                  // 참여했던 모임 통계
+                  StreamBuilder<int>(
+                    stream: _userStatsService.getJoinedMeetupCount(),
+                    builder: (context, snapshot) {
+                      final count = snapshot.data ?? 0;
+                      return _buildStatDisplay('참여했던 모임', count.toString());
+                    },
+                  ),
+
+                  // 작성 게시글 통계
+                  StreamBuilder<int>(
+                    stream: _userStatsService.getUserPostCount(),
+                    builder: (context, snapshot) {
+                      final count = snapshot.data ?? 0;
+                      return _buildStatDisplay('작성 게시글', count.toString());
+                    },
+                  ),
                 ],
               ),
             ),
@@ -135,17 +195,27 @@ class MyPageScreen extends StatelessWidget {
               context,
               '내 모임',
               Icons.group,
-                  () => ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('준비 중인 기능입니다.')),
-              ),
+                  () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const UserMeetupsScreen(),
+                  ),
+                );
+              },
             ),
             _buildMenuItem(
               context,
               '내 게시글',
               Icons.article,
-                  () => ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('준비 중인 기능입니다.')),
-              ),
+                  () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const UserPostsScreen(),
+                  ),
+                );
+              },
             ),
             _buildMenuItem(
               context,
@@ -184,8 +254,8 @@ class MyPageScreen extends StatelessWidget {
     );
   }
 
-  // 통계 위젯
-  Widget _buildStat(String label, String value) {
+  // 클릭 불가능한 통계 표시 위젯
+  Widget _buildStatDisplay(String label, String value) {
     return Column(
       children: [
         Text(
