@@ -6,6 +6,7 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:flutter_practice3/screens/profile_edit_screen.dart';
 import 'package:flutter_practice3/screens/user_meetups_screens.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
@@ -135,16 +136,20 @@ class _MyPageScreenState extends State<MyPageScreen> {
 
                   // 프로필 편집 버튼
                   const SizedBox(height: 16),
-                  OutlinedButton(
+                  OutlinedButton(  // OutlineButton이 아닌 OutlinedButton 사용
                     onPressed: () {
-                      // 프로필 편집 화면으로 이동 (구현 예정)
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('프로필 편집 기능은 준비 중입니다.'),
+                      // 프로필 편집 화면으로 이동
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ProfileEditScreen(),
                         ),
-                      );
+                      ).then((_) {
+                        // 프로필 편집 후 상태 업데이트
+                        setState(() {});
+                      });
                     },
-                    style: OutlinedButton.styleFrom(
+                    style: OutlinedButton.styleFrom(  // OutlinedButton 스타일 적용
                       side: BorderSide(color: Colors.grey[400]!),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
