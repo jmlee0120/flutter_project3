@@ -87,28 +87,44 @@ class UserStatsService {
     return _firestore
         .collection('meetups')
         .where('participants', arrayContains: user.uid)
-        .where('userId', isNotEqualTo: user.uid) // 주최한 모임 제외
         .snapshots()
         .map((snapshot) {
-      return snapshot.docs.map((doc) {
-        final data = doc.data();
-        final meetupDate = data['date'] != null
-            ? (data['date'] as Timestamp).toDate()
-            : DateTime.now();
+      try {
+        // 사용자가 주최하지 않은 모임만 필터링
+        final filteredDocs = snapshot.docs.where((doc) {
+          final data = doc.data();
+          // 'userId' 필드가 존재하고, 현재 사용자 ID와 다른 경우
+          return data['userId'] != user.uid;
+        }).toList();
 
-        return Meetup(
-          id: doc.id,
-          title: data['title'] ?? '',
-          description: data['description'] ?? '',
-          location: data['location'] ?? '',
-          time: data['time'] ?? '',
-          maxParticipants: data['maxParticipants'] ?? 0,
-          currentParticipants: data['currentParticipants'] ?? 0,
-          host: data['hostNickname'] ?? '',
-          imageUrl: data['imageUrl'] ?? '',
-          date: meetupDate,
-        );
-      }).toList();
+        // 필터링된 결과가 없을 경우 빈 배열 반환
+        if (filteredDocs.isEmpty) {
+          return <Meetup>[];
+        }
+
+        return filteredDocs.map((doc) {
+          final data = doc.data();
+          final meetupDate = data['date'] != null
+              ? (data['date'] as Timestamp).toDate()
+              : DateTime.now();
+
+          return Meetup(
+            id: doc.id,
+            title: data['title'] ?? '',
+            description: data['description'] ?? '',
+            location: data['location'] ?? '',
+            time: data['time'] ?? '',
+            maxParticipants: data['maxParticipants'] ?? 0,
+            currentParticipants: data['currentParticipants'] ?? 0,
+            host: data['hostNickname'] ?? '',
+            imageUrl: data['imageUrl'] ?? '',
+            date: meetupDate,
+          );
+        }).toList();
+      } catch (e) {
+        print('참여 모임 처리 오류: $e');
+        return <Meetup>[];
+      }
     });
   }
 
