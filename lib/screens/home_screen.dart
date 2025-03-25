@@ -1,9 +1,17 @@
+// 모임 메인 화면
+// 날짜별 모임 목록 표시
+// 모임 생성 기능 제공
+
+
+
+
 import 'package:flutter/material.dart';
 import '../constants/app_constants.dart';
 import '../models/meetup.dart';
 import '../services/meetup_service.dart';
 import '../widgets/day_meetup_list.dart';
 import 'create_meetup_screen.dart';
+
 
 class MeetupHomePage extends StatefulWidget {
   const MeetupHomePage({super.key});

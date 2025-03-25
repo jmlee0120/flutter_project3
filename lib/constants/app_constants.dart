@@ -1,6 +1,9 @@
 // lib/constants/app_constants.dart
 // Update the JOIN and FULL constants
 
+// 앱 전체에서 사용하는 상수 정의
+// 문자열, 기본값 등 관리
+
 class AppConstants {
   // Meetup related
   static const String JOIN = "Join";

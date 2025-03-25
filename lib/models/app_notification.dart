@@ -1,4 +1,8 @@
 // lib/models/app_notification.dart
+// 앱 내 알림 데이터 모델 정의
+// 알림 유형, 내용, 읽음상태 등의 속성 포함
+// Firestore 데이터 변환 및 관리 메서드 제공
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 // 일반 Notification 클래스와 이름 충돌을 방지하기 위해 AppNotification으로 명명

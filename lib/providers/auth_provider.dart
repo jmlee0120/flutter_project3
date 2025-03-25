@@ -1,4 +1,9 @@
 // lib/providers/auth_provider.dart
+// 인증상태 관리 및 전파
+// 로그인 상태, 사용자 정보 제공
+// 다른 화면에서 인증 정보 접근 가능하게 함
+
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';

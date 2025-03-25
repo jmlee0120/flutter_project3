@@ -1,4 +1,10 @@
 // lib/services/notification_service.dart
+// 앱 내 알림 관리
+// 알림 생성, 읽음 처리, 삭제 기능
+// 읽지 않은 알림 수 계산
+
+
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/app_notification.dart';

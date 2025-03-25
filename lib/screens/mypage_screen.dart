@@ -1,4 +1,10 @@
 // lib/screens/mypage_screen.dart
+// 사용자 프로필 화면
+// 사용자 정보 및 활동 통계 표시
+// 계정 관련 메뉴 제공
+
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter_practice3/screens/user_meetups_screens.dart';
 import 'package:provider/provider.dart';

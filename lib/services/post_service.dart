@@ -1,4 +1,11 @@
 // lib/services/post_service.dart
+// 게시글 관련 CRUD 작업 처리
+// Firestore와 통신하여 게시글 데이터 관리
+// 좋아요 기능 구현
+// 게시글 조회 및 필터링 기능
+
+
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/post.dart';

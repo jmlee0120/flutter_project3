@@ -1,4 +1,10 @@
 // lib/screens/login_screen.dart
+// 로그인 화면 구현
+// Google 로그인 기능 제공
+// 인증 후 화면 전환 처리
+
+
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';

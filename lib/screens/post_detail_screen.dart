@@ -1,4 +1,9 @@
 // lib/screens/post_detail_screen.dart
+// 게시글 상세 화면
+// 게시글 내용, 좋아요, 댓글 표시
+// 댓글 작성 및 게시글 삭제 기능
+
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/post.dart';

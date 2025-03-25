@@ -1,4 +1,10 @@
 // lib/screens/nickname_setup_screen.dart
+// 사용자 닉네임 설정 화면
+// 프로필 초기 설정 처리
+
+
+
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';

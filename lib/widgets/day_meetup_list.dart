@@ -1,4 +1,8 @@
 // lib/widgets/day_meetup_list.dart
+// 특정 날짜의 모임 목록 위젯 구현
+// 모임 목록 표시 및 빈 상태 처리
+
+
 import 'package:flutter/material.dart';
 import '../models/meetup.dart';
 import 'meetup_card.dart';

@@ -1,4 +1,10 @@
 // lib/screens/main_screen.dart
+// 앱의 메인화면 구현
+// 하단 탭 네비게이션 제공
+// 게시판, 모임, 마이페이지 화면 통합
+
+
+
 import 'package:flutter/material.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart'; // 이 패키지 추가 필요
 import '../constants/app_constants.dart';

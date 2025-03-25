@@ -1,4 +1,10 @@
 // lib/services/user_stats_service.dart
+// 사용자 활동 통계 관리
+// 참여 모임, 작성 게시글, 받은 좋아요 통계 제공
+// 사용자별 콘텐츠 필터링 및 조회
+
+
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/post.dart';

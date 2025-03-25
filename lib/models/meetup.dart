@@ -1,4 +1,9 @@
 // lib/models/meetup.dart
+// 모임 데이터 모델 정의
+// 모임 관련 속성 포함(제목,설명,작성자,작성일,좋아요 수 등)
+// 모임 정보 포맷팅을 위한 유틸리티 메서드 제공
+
+
 import 'package:intl/intl.dart';
 
 class Meetup {

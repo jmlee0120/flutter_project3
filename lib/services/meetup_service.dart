@@ -1,4 +1,10 @@
 // lib/services/meetup_service.dart
+// 모임 관련 CRUD 작업 처리
+//모임 생성, 참여, 취소 기능
+// 날짜별 모임 조회 및 필터링
+// 날짜 관련 유틸리티 함수 제공
+
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/meetup.dart';

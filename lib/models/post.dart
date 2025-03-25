@@ -1,4 +1,8 @@
 // lib/models/post.dart
+// 게시글 데이터 모델 정의
+// 게시글 관련 속성 및 메서드 포함(제목,내용,작성자,작성일,좋아요 수 등)
+// 데이터 포맷팅 메서드 제공(날짜, 미리보기 등)
+
 import 'package:intl/intl.dart';
 
 class Post {

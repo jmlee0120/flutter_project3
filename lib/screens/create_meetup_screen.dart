@@ -5,6 +5,10 @@ import '../constants/app_constants.dart';
 import '../services/meetup_service.dart';
 import '../providers/auth_provider.dart';
 
+
+// 모임 생성화면
+// 모임 정보 입력 및 저장
+
 class CreateMeetupScreen extends StatefulWidget {
   final int initialDayIndex;
   final Function(int, Meetup) onCreateMeetup;

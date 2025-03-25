@@ -1,4 +1,6 @@
 // lib/screens/user_meetups_screen.dart
+// 마이페이지에서 모임 확인 용도
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../models/meetup.dart';

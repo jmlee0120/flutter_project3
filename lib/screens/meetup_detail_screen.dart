@@ -1,4 +1,9 @@
 // lib/screens/meetup_detail_screen.dart
+// 모임 상세화면, 모임 정보 표시
+// 모임 참여 및 취소 기능
+
+
+
 import 'package:flutter/material.dart';
 //import 'package:provider/provider.dart';
 import '../models/meetup.dart';

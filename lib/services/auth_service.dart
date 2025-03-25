@@ -1,4 +1,11 @@
 // lib/services/auth_service.dart
+// 인증관련 기능 제공(로그인, 로그아웃, 사용자 정보 관리)
+// Google 로그인 구현
+// 사용자 프로필 정보 저장 및 검색
+// 닉네임 업데이트 기능
+
+
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

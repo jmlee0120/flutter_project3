@@ -1,4 +1,9 @@
 // lib/services/comment_service.dart
+// 댓글 관련 CRUD 작업 처리
+// 게시글에 댓글 추가 및 삭제
+// 댓글 수 관리
+
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/comment.dart';

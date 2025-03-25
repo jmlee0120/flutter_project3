@@ -1,4 +1,8 @@
 // lib/widgets/notification_badge.dart
+// 알림 배지 위젯 구현
+//읽지 않은 알림 개수 표시
+
+
 import 'package:flutter/material.dart';
 
 class NotificationBadge extends StatelessWidget {

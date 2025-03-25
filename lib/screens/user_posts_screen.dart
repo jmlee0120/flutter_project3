@@ -1,4 +1,7 @@
 // lib/screens/user_posts_screen.dart
+// 마이페이지에서 게시글 목록 확인 용도
+
+
 import 'package:flutter/material.dart';
 import '../models/post.dart';
 import '../services/user_stats_service.dart';

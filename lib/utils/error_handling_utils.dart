@@ -1,4 +1,10 @@
 // lib/utils/error_handling_utils.dart
+// 에러 처리와 관련된 유틸리티 함수 모아둔 파일
+// 에러 메시지 표시, 데이터 로딩 실패 위젯, 데이터 없음 위젯 등을 제공
+// 앱 전체에서 일관된 에러처리 목적
+
+
+
 import 'package:flutter/material.dart';
 
 class ErrorHandlingUtils {

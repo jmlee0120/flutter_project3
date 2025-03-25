@@ -1,3 +1,7 @@
+// 모임 생성 화면
+// 모임 정보 입력 및 저장
+
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';

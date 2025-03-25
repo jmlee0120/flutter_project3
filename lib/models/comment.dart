@@ -1,4 +1,9 @@
 // lib/models/comment.dart
+// 댓글 데이터 모델 정의
+// 댓글 관련 속성 포함(내용,작성자,작서일 등)
+// Firestore데이터 변환 메서드 제공
+
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Comment {

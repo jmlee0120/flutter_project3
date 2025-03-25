@@ -1,4 +1,9 @@
 // lib/widgets/meetup_card.dart
+// 모임 카드 위젯 구현
+// 모임 정보 표시 및 참여 버튼 제공
+
+
+
 import 'package:flutter/material.dart';
 import '../models/meetup.dart';
 import '../constants/app_constants.dart';

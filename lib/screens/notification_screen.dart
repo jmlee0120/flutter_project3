@@ -1,4 +1,9 @@
 // lib/screens/notification_screen.dart
+// 알림 목록 화면
+// 알림 표시 및 읽음 처리
+
+
+
 import 'package:flutter/material.dart';
 import '../models/app_notification.dart';
 import '../services/notification_service.dart';

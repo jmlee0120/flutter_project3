@@ -1,4 +1,10 @@
 // lib/screens/board_screen.dart
+//게시판 메인 화면
+//광고 배터 및 게시글 목록 표시
+//게시글 작성 기능 제공
+
+
+
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../models/post.dart';

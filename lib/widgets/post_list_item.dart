@@ -1,3 +1,8 @@
+// 게시글 목록 아이템 위젯 구현
+// 게시글 미리보기 표시
+
+
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // 날짜 포맷용
 import '../models/post.dart';
