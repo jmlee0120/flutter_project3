@@ -1,6 +1,6 @@
 // lib/services/meetup_service.dart
 // 모임 관련 CRUD 작업 처리
-//모임 생성, 참여, 취소 기능
+// 모임 생성, 참여, 취소 기능
 // 날짜별 모임 조회 및 필터링
 // 날짜 관련 유틸리티 함수 제공
 
@@ -170,11 +170,11 @@ class MeetupService {
   // 모임 목록 가져오기 (메모리 기반) - 예시 모임 데이터 제거
   List<List<Meetup>> getMeetupsByDayFromMemory() {
     // 현재 날짜 기준 일주일 날짜 계산
-    final List<DateTime> weekDates = getWeekDates();
+    // final List<DateTime> weekDates = getWeekDates();
 
     // 예시 데이터를 제거하고 빈 목록 반환 (실제 데이터는 Firebase에서 가져옴)
     return List.generate(7, (dayIndex) {
-      final DateTime dayDate = weekDates[dayIndex];
+      // final DateTime dayDate = weekDates[dayIndex];
       return []; // 빈 배열 반환 (예시 데이터 삭제)
     });
   }

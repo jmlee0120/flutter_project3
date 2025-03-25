@@ -503,7 +503,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                           // 버튼 클릭 시 좋아요 토글 함수 호출
                           _toggleLike();
                         },
-                        splashColor: Colors.red.withOpacity(0.3), // 눌렀을 때 효과 추가
+                        splashColor: Colors.red.withAlpha(76), // 눌렀을 때 효과 추가
                         splashRadius: 24,
                       ),
                       // 좋아요 수
@@ -599,7 +599,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
               color: Colors.white,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.2),
+                  color: Colors.grey.withAlpha(51),
                   spreadRadius: 1,
                   blurRadius: 3,
                   offset: const Offset(0, -1),
