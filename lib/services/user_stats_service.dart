@@ -38,9 +38,16 @@ class UserStatsService {
     return _firestore
         .collection('meetups')
         .where('participants', arrayContains: user.uid)
-        .where('userId', isNotEqualTo: user.uid)
         .snapshots()
-        .map((snapshot) => snapshot.docs.length);
+        .map((snapshot) {
+      // 주최하지 않은 모임만 필터링
+      final filteredDocs = snapshot.docs.where((doc) {
+        final data = doc.data();
+        return data['userId'] != user.uid;
+      }).toList();
+
+      return filteredDocs.length;
+    });
   }
 
   // 사용자가 주최한 모임 목록
