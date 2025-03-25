@@ -64,7 +64,26 @@ class _NotificationScreenState extends State<NotificationScreen> {
         iconColor = Colors.grey;
     }
 
-    return Card(
+    return Dismissible(
+        key: Key(notification.id),
+        background: Container(
+          color: Colors.red,
+          alignment: Alignment.centerRight,
+          padding: const EdgeInsets.only(right: 20.0),
+          child: const Icon(
+            Icons.delete,
+            color: Colors.white,
+          ),
+        ),
+        direction: DismissDirection.endToStart,
+        onDismissed: (direction) {
+          _notificationService.deleteNotification(notification.id);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('알림이 삭제되었습니다')),
+          );
+        },
+
+    child: Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: InkWell(
         onTap: () {
@@ -199,6 +218,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
           ),
         ),
       ),
+    ),
     );
   }
 
