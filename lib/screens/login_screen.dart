@@ -26,11 +26,11 @@ class LoginScreen extends StatelessWidget {
           children: [
             // 앱 이름 텍스트
             const Text(
-              'David C.',
+              'Wefilling',
               style: TextStyle(
                 fontSize: 36,
                 fontWeight: FontWeight.w800, // 굵직한 글씨체
-                color: Colors.green, // 초록색 글씨
+                color: Colors.blueAccent, // 초록색 글씨
                 fontFamily: 'Roboto', // 단단해 보이는 글씨체
                 letterSpacing: 1.2, // 글자 간격을 약간 넓혀 더 단단해 보이게
               ),
