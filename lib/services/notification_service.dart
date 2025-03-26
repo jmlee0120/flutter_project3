@@ -3,16 +3,16 @@
 // 알림 생성, 읽음 처리, 삭제 기능
 // 읽지 않은 알림 수 계산
 
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/app_notification.dart';
 import '../models/meetup.dart';
+import 'notification_settings_service.dart';
 
 class NotificationService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final NotificationSettingsService _settingsService = NotificationSettingsService();
 
   // 알림 생성
   Future<bool> createNotification({
@@ -21,14 +21,27 @@ class NotificationService {
     required String message, // 알림 내용
     required String type, // 알림 유형
     String? meetupId, // 관련 모임 ID (선택사항)
+    String? postId, // 관련 게시글 ID (선택사항)
+    String? actorId, // 알림을 발생시킨 사용자 ID (선택사항)
+    String? actorName, // 알림을 발생시킨 사용자 이름 (선택사항)
   }) async {
     try {
+      // 알림 설정 확인 - 해당 유형의 알림이 비활성화되어 있으면 알림 생성 안 함
+      final isEnabled = await _settingsService.isNotificationEnabled(type);
+      if (!isEnabled) {
+        print('알림 유형 $type 비활성화됨: 알림 생성 건너뜀');
+        return false;
+      }
+
       final notificationData = {
         'userId': userId,
         'title': title,
         'message': message,
         'type': type,
         'meetupId': meetupId,
+        'postId': postId,
+        'actorId': actorId,
+        'actorName': actorName,
         'createdAt': FieldValue.serverTimestamp(),
         'isRead': false,
       };
@@ -49,11 +62,93 @@ class NotificationService {
         userId: hostId,
         title: '모임 정원이 다 찼습니다',
         message: '${meetup.title} 모임의 정원(${meetup.maxParticipants}명)이 모두 채워졌습니다.',
-        type: 'meetup_full',
+        type: NotificationSettingKeys.meetupFull,
         meetupId: meetup.id,
       );
     } catch (e) {
       print('모임 정원 알림 오류: $e');
+      return false;
+    }
+  }
+
+  // 모임이 취소되었을 때 참가자들에게 알림 보내기
+  Future<bool> sendMeetupCancelledNotification(Meetup meetup, List<String> participantIds) async {
+    try {
+      bool allSuccess = true;
+      for (final userId in participantIds) {
+        // 주최자는 제외 (자기가 취소한 모임이므로)
+        if (userId != meetup.host) {
+          final success = await createNotification(
+            userId: userId,
+            title: '모임이 취소되었습니다',
+            message: '참여 예정이던 "${meetup.title}" 모임이 취소되었습니다.',
+            type: NotificationSettingKeys.meetupCancelled,
+            meetupId: meetup.id,
+          );
+          allSuccess = allSuccess && success;
+        }
+      }
+      return allSuccess;
+    } catch (e) {
+      print('모임 취소 알림 오류: $e');
+      return false;
+    }
+  }
+
+  // 게시글에 새 댓글이 달렸을 때 작성자에게 알림 보내기
+  Future<bool> sendNewCommentNotification(
+      String postId,
+      String postTitle,
+      String postAuthorId,
+      String commenterName,
+      String commenterId,
+      ) async {
+    // 자기 게시글에 자신이 댓글을 단 경우는 알림 제외
+    if (postAuthorId == commenterId) {
+      return true;
+    }
+
+    try {
+      return await createNotification(
+        userId: postAuthorId,
+        title: '새 댓글이 달렸습니다',
+        message: '$commenterName님이 회원님의 게시글 "$postTitle"에 댓글을 남겼습니다.',
+        type: NotificationSettingKeys.newComment,
+        postId: postId,
+        actorId: commenterId,
+        actorName: commenterName,
+      );
+    } catch (e) {
+      print('새 댓글 알림 오류: $e');
+      return false;
+    }
+  }
+
+  // 게시글에 좋아요가 눌렸을 때 작성자에게 알림 보내기
+  Future<bool> sendNewLikeNotification(
+      String postId,
+      String postTitle,
+      String postAuthorId,
+      String likerName,
+      String likerId,
+      ) async {
+    // 자기 게시글에 자신이 좋아요를 누른 경우는 알림 제외
+    if (postAuthorId == likerId) {
+      return true;
+    }
+
+    try {
+      return await createNotification(
+        userId: postAuthorId,
+        title: '게시글에 좋아요가 추가되었습니다',
+        message: '$likerName님이 회원님의 게시글 "$postTitle"을 좋아합니다.',
+        type: NotificationSettingKeys.newLike,
+        postId: postId,
+        actorId: likerId,
+        actorName: likerName,
+      );
+    } catch (e) {
+      print('좋아요 알림 오류: $e');
       return false;
     }
   }
@@ -145,4 +240,3 @@ class NotificationService {
     }
   }
 }
-

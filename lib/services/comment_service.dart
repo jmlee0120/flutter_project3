@@ -7,10 +7,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/comment.dart';
+import 'notification_service.dart';
 
 class CommentService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final NotificationService _notificationService = NotificationService();
 
   // 댓글 추가
   Future<bool> addComment(String postId, String content) async {
@@ -39,6 +41,25 @@ class CommentService {
 
       // Firestore에 저장
       await _firestore.collection('comments').add(commentData);
+
+      // 게시글 정보 가져오기 (제목과 작성자 ID 필요)
+      final postDoc = await _firestore.collection('posts').doc(postId).get();
+      if (postDoc.exists && postDoc.data() != null) {
+        final postData = postDoc.data()!;
+        final postTitle = postData['title'] ?? '게시글';
+        final postAuthorId = postData['userId'];
+
+        // 게시글 작성자에게 알림 전송 (자기 자신이 댓글을 단 경우 제외)
+        if (postAuthorId != null && postAuthorId != user.uid) {
+          await _notificationService.sendNewCommentNotification(
+              postId,
+              postTitle,
+              postAuthorId,
+              nickname,
+              user.uid
+          );
+        }
+      }
 
       // 게시글 문서에 댓글 수 업데이트
       await _updateCommentCount(postId);

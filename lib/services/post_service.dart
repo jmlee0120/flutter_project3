@@ -4,15 +4,15 @@
 // 좋아요 기능 구현
 // 게시글 조회 및 필터링 기능
 
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/post.dart';
+import 'notification_service.dart';
 
 class PostService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final NotificationService _notificationService = NotificationService();
 
   // 게시글 추가
   Future<void> addPost(String title, String content) async {
@@ -127,6 +127,9 @@ class PostService {
       List<dynamic> likedBy = List.from(data['likedBy'] ?? []);
       bool hasLiked = likedBy.contains(user.uid);
 
+      final postTitle = data['title'] ?? '';
+      final authorId = data['userId'];
+
       print('현재 좋아요 상태: $hasLiked, 사용자 ID: ${user.uid}, 게시글 ID: $postId');
 
       // 좋아요 토글
@@ -146,6 +149,23 @@ class PostService {
           'likes': FieldValue.increment(1),
         });
         print('좋아요 추가 완료');
+
+        // 좋아요 알림 전송 (자신의 게시글이 아닌 경우에만)
+        if (authorId != null && authorId != user.uid) {
+          // 사용자 정보 가져오기
+          final userDoc = await _firestore.collection('users').doc(user.uid).get();
+          final userData = userDoc.data();
+          final nickname = userData?['nickname'] ?? '익명';
+
+          // 좋아요 알림 전송
+          await _notificationService.sendNewLikeNotification(
+              postId,
+              postTitle,
+              authorId,
+              nickname,
+              user.uid
+          );
+        }
       }
 
       return true;
