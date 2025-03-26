@@ -13,7 +13,7 @@ import '../providers/auth_provider.dart';
 import '../services/user_stats_service.dart';
 //import 'user_meetups_screens.dart';
 import 'user_posts_screen.dart';
-import 'profile_edit_screen.dart';
+//import 'profile_edit_screen.dart';
 import 'notification_settings_screen.dart';
 
 class MyPageScreen extends StatefulWidget {
